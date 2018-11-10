@@ -30,3 +30,8 @@ Route::resource('users', 'UserController')->except([
 Route::resource('produtos', 'ProdutoController')->except([
     'edit', 'create'
 ]);
+
+// Routes index, store, show, update e destroy for deliveries
+Route::resource('entregas', 'EntregaController')->except([
+    'edit', 'create'
+]);

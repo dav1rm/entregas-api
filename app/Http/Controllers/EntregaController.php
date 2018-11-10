@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Entrega;
-use App\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Validator;
 
 class EntregaController extends Controller
 {
@@ -17,19 +16,9 @@ class EntregaController extends Controller
     public function index()
     {
         $entregas = Entrega::all();
-
-        return view('entregas.index', compact('entregas'));
+        return response()->json($entregas);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view('entregas.create');
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -39,12 +28,19 @@ class EntregaController extends Controller
      */
     public function store(Request $request)
     {
-        $request['status'] = "Pendente";
-        // dd($request->all());
-        $entrega = Auth::user()->solicitacoes()->create($request->all());
+        $validator = Validator::make($request->all(), [
+            'pagamento' => 'required|string',
+            'nome_cliente' => 'required|string',
+            'telefone_cliente' => 'required|string',
+            'valor' => 'required|numeric',
+            'taxa' => 'required|numeric'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $entrega = Entrega::create($request->all());
 
-        if($entrega) return redirect('/entregas');
-        else return back();
+        return response()->json($entrega, 201);
     }
 
     /**
@@ -53,20 +49,14 @@ class EntregaController extends Controller
      * @param  \App\Models\Entrega  $entrega
      * @return \Illuminate\Http\Response
      */
-    public function show(Entrega $entrega)
+    public function show($id)
     {
-        //
-    }
+        $entrega = Entrega::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Entrega  $entrega
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Entrega $entrega)
-    {
-        //
+        if(!$entrega)
+            return response()->json(['message'   => 'Entrega não encontrada'], 404);
+
+        return response()->json($entrega);
     }
 
     /**
@@ -76,9 +66,24 @@ class EntregaController extends Controller
      * @param  \App\Models\Entrega  $entrega
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Entrega $entrega)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'pagamento' => 'nullable|string',
+            'nome_cliente' => 'nullable|string',
+            'telefone_cliente' => 'nullable|string',
+            'valor' => 'nullable|numeric',
+            'taxa' => 'nullable|numeric'
+        ]);
+        $entrega = Entrega::find($id);
+
+        if(!$entrega) {
+            return response()->json(['message'   => 'Entrega não encontrada'], 404);
+        }
+
+        $entrega->update($request->all());
+
+        return response()->json($entrega);
     }
 
     /**
@@ -87,8 +92,15 @@ class EntregaController extends Controller
      * @param  \App\Models\Entrega  $entrega
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Entrega $entrega)
+    public function destroy($id)
     {
-        //
+        $entrega = Entrega::find($id);
+
+        if(!$entrega) {
+            return response()->json(['message'   => 'Entrega não encontrada'], 404);
+        }
+        if($entrega->delete()) {
+            return response()->json(['message'   => 'Entrega excluída com sucesso'], 200);
+        }
     }
 }
