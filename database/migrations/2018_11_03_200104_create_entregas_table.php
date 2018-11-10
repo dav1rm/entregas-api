@@ -21,7 +21,7 @@ class CreateEntregasTable extends Migration
             $table->string('telefone_cliente');
             $table->string('pagamento');
             $table->unsignedInteger('entregador_id')->nullable();
-            $table->unsignedInteger('vendedor_id');
+            $table->unsignedInteger('vendedor_id')->nullable();
             $table->timestamps();
 
             $table->foreign('entregador_id')->references('id')->on('users');

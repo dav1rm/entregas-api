@@ -17,7 +17,7 @@ class CreateStatusTable extends Migration
             $table->increments('id');
             $table->string('nome');
             $table->boolean('atual');
-            $table->unsignedInteger('entrega_id');
+            $table->unsignedInteger('entrega_id')->nullable();
 
             $table->foreign('entrega_id')->references('id')->on('entregas');
             $table->timestamps();

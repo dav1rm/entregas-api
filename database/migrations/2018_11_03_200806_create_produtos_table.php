@@ -17,7 +17,7 @@ class CreateProdutosTable extends Migration
             $table->increments('id');
             $table->string('nome');
             $table->decimal('valor', 8, 2);
-            $table->unsignedInteger('entrega_id');
+            $table->unsignedInteger('entrega_id')->nullable();
 
             $table->foreign('entrega_id')->references('id')->on('entregas');
         });

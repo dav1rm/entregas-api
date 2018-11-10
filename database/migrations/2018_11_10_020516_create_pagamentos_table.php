@@ -18,7 +18,7 @@ class CreatePagamentosTable extends Migration
             $table->string('tipo');
             $table->decimal('valor', 8, 2);
             $table->text('descricao');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
