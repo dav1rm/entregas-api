@@ -25,3 +25,8 @@ Route::group(['prefix' => 'auth'], function () {
 Route::resource('users', 'UserController')->except([
     'edit', 'create', 'store'
 ]);
+
+// Routes index, store, show, update e destroy for products
+Route::resource('produtos', 'ProdutoController')->except([
+    'edit', 'create'
+]);

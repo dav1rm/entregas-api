@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produto;
 use Illuminate\Http\Request;
+use Validator;
 
 class ProdutoController extends Controller
 {
@@ -14,18 +15,10 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        //
+        $produtos = Produto::all();
+        return response()->json($produtos);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +28,16 @@ class ProdutoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nome' => 'required|string',
+            'valor' => 'required|numeric'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $produto = Produto::create($request->all());
+
+        return response()->json($produto, 201);
     }
 
     /**
@@ -44,20 +46,14 @@ class ProdutoController extends Controller
      * @param  \App\Models\Produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function show(Produto $produto)
+    public function show($id)
     {
-        //
-    }
+        $produto = Produto::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Produto  $produto
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Produto $produto)
-    {
-        //
+        if(!$produto)
+            return response()->json(['message'   => 'Produto não encontrado'], 404);
+
+        return response()->json($produto);
     }
 
     /**
@@ -67,9 +63,21 @@ class ProdutoController extends Controller
      * @param  \App\Models\Produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Produto $produto)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nome' => 'nullable|string',
+            'valor' => 'nullable|numeric'
+        ]);
+        $produto = Produto::find($id);
+
+        if(!$produto) {
+            return response()->json(['message'   => 'Produto não encontrado'], 404);
+        }
+
+        $produto->update($request->all());
+
+        return response()->json($produto);
     }
 
     /**
@@ -78,8 +86,15 @@ class ProdutoController extends Controller
      * @param  \App\Models\Produto  $produto
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Produto $produto)
+    public function destroy($id)
     {
-        //
+        $produto = Produto::find($id);
+
+        if(!$produto) {
+            return response()->json(['message'   => 'Produto não encontrado'], 404);
+        }
+        if($produto->delete()) {
+            return response()->json(['message'   => 'Produto excluído com sucesso'], 200);
+        }
     }
 }
