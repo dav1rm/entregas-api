@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Endereco;
 use Illuminate\Http\Request;
+use Validator;
 
 class EnderecoController extends Controller
 {
@@ -14,18 +15,10 @@ class EnderecoController extends Controller
      */
     public function index()
     {
-        //
+        $enderecos = Endereco::all();
+        return response()->json($enderecos);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +28,23 @@ class EnderecoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'cep' => 'nullable|string',
+            'rua' => 'required|string',
+            'numero' => 'nullable|integer',
+            'bairro' => 'nullable|string',
+            'cidade' => 'required|string',
+            'estado' => 'required|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'complemento' => 'nullable|string'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $endereco = Endereco::create($request->all());
+
+        return response()->json($endereco, 201);
     }
 
     /**
@@ -44,20 +53,14 @@ class EnderecoController extends Controller
      * @param  \App\Models\Endereco  $endereco
      * @return \Illuminate\Http\Response
      */
-    public function show(Endereco $endereco)
+    public function show($id)
     {
-        //
-    }
+        $endereco = Endereco::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Endereco  $endereco
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Endereco $endereco)
-    {
-        //
+        if(!$endereco)
+            return response()->json(['message'   => 'Endereco não encontrado'], 404);
+
+        return response()->json($endereco);
     }
 
     /**
@@ -67,9 +70,28 @@ class EnderecoController extends Controller
      * @param  \App\Models\Endereco  $endereco
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Endereco $endereco)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'cep' => 'nullable|string',
+            'rua' => 'nullable|string',
+            'numero' => 'nullable|integer',
+            'bairro' => 'nullable|string',
+            'cidade' => 'nullable|string',
+            'estado' => 'nullable|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'complemento' => 'nullable|string'
+        ]);
+        $endereco = Endereco::find($id);
+
+        if(!$endereco) {
+            return response()->json(['message'   => 'Endereco não encontrado'], 404);
+        }
+
+        $endereco->update($request->all());
+
+        return response()->json($endereco);
     }
 
     /**
@@ -78,8 +100,15 @@ class EnderecoController extends Controller
      * @param  \App\Models\Endereco  $endereco
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Endereco $endereco)
+    public function destroy($id)
     {
-        //
+        $endereco = Endereco::find($id);
+
+        if(!$endereco) {
+            return response()->json(['message'   => 'Endereco não encontrado'], 404);
+        }
+        if($endereco->delete()) {
+            return response()->json(['message'   => 'Endereco excluído com sucesso'], 200);
+        }
     }
 }

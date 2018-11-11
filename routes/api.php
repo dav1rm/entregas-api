@@ -40,3 +40,8 @@ Route::resource('entregas', 'EntregaController')->except([
 Route::resource('pagamentos', 'PagamentoController')->except([
     'edit', 'create'
 ]);
+
+// Routes index, store, show, update e destroy for payments
+Route::resource('enderecos', 'EnderecoController')->except([
+    'edit', 'create'
+]);
