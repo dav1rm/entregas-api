@@ -31,7 +31,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
         }
-        $request->password = bcrypt($request->password);
+        $request['password'] = bcrypt($request->password);
         $user = User::create($request->all());
         if ($user)
         {
@@ -65,9 +65,10 @@ class AuthController extends Controller
         }
         $credentials = request(['email', 'password']);
         if(!Auth::attempt($credentials))
-            return response()->json(['error' => 'Não autorizado'], 401);
+            return response()->json(['error' => 'Email ou senha incorretos'], 401);
 
         $user = $request->user();
+        // php artisan passport:client --personal
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->token;
         if ($request->remember_me)
