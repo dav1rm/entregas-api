@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Validator;
 
 class StatusController extends Controller
 {
@@ -14,18 +15,10 @@ class StatusController extends Controller
      */
     public function index()
     {
-        //
+        $statuses = Status::all();
+        return response()->json($statuses);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +28,16 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nome' => 'required|string',
+            'atual' => 'required|boolean'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $status = Status::create($request->all());
+
+        return response()->json($status, 201);
     }
 
     /**
@@ -44,20 +46,14 @@ class StatusController extends Controller
      * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function show(Status $status)
+    public function show($id)
     {
-        //
-    }
+        $status = Status::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Status  $status
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Status $status)
-    {
-        //
+        if(!$status)
+            return response()->json(['message'   => 'Status não encontrado'], 404);
+
+        return response()->json($status);
     }
 
     /**
@@ -67,9 +63,21 @@ class StatusController extends Controller
      * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Status $status)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'nome' => 'nullable|string',
+            'atual' => 'nullable|boolean'
+        ]);
+        $status = Status::find($id);
+
+        if(!$status) {
+            return response()->json(['message'   => 'Status não encontrado'], 404);
+        }
+
+        $status->update($request->all());
+
+        return response()->json($status);
     }
 
     /**
@@ -78,8 +86,15 @@ class StatusController extends Controller
      * @param  \App\Models\Status  $status
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Status $status)
+    public function destroy($id)
     {
-        //
+        $status = Status::find($id);
+
+        if(!$status) {
+            return response()->json(['message'   => 'Status não encontrado'], 404);
+        }
+        if($status->delete()) {
+            return response()->json(['message'   => 'Status excluído com sucesso'], 200);
+        }
     }
 }

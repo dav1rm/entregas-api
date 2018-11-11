@@ -41,7 +41,12 @@ Route::resource('pagamentos', 'PagamentoController')->except([
     'edit', 'create'
 ]);
 
-// Routes index, store, show, update e destroy for payments
+// Routes index, store, show, update e destroy for address
 Route::resource('enderecos', 'EnderecoController')->except([
+    'edit', 'create'
+]);
+
+// Routes index, store, show, update e destroy for statuses
+Route::resource('status', 'StatusController')->except([
     'edit', 'create'
 ]);
