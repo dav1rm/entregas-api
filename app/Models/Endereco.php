@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Endereco extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['cep', 'rua', 'numero', 'bairro', 'cidade', 'estado', 'latitude', 'longitude', 'complemento'];
+    protected $fillable = ['cep', 'rua', 'numero', 'bairro', 'cidade', 'estado', 'latitude', 'longitude', 'complemento', 'entrega_id', 'user_id'];
 
     public function entrega()
     {

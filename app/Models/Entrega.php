@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Entrega extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['valor', 'taxa', 'nome_cliente', 'telefone_cliente', 'pagamento'];
+    protected $fillable = ['valor', 'taxa', 'nome_cliente', 'telefone_cliente', 'pagamento', 'vendedor_id', 'entregador_id'];
 
     public function entregador()
     {

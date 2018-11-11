@@ -30,7 +30,8 @@ class StatusController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nome' => 'required|string',
-            'atual' => 'required|boolean'
+            'atual' => 'required|boolean',
+            'entrega_id' => 'nullable|integer'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -67,7 +68,8 @@ class StatusController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nome' => 'nullable|string',
-            'atual' => 'nullable|boolean'
+            'atual' => 'nullable|boolean',
+            'entrega_id' => 'nullable|integer'
         ]);
         $status = Status::find($id);
 

@@ -15,7 +15,8 @@ class EntregaController extends Controller
      */
     public function index()
     {
-        $entregas = Entrega::all();
+        // List all deliveries with name and id from vendedor
+        $entregas = Entrega::with('vendedor:id,name')->get();
         return response()->json($entregas);
     }
 
@@ -33,7 +34,8 @@ class EntregaController extends Controller
             'nome_cliente' => 'required|string',
             'telefone_cliente' => 'required|string',
             'valor' => 'required|numeric',
-            'taxa' => 'required|numeric'
+            'taxa' => 'required|numeric',
+            'vendedor_id' => 'nullable|integer'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -73,7 +75,9 @@ class EntregaController extends Controller
             'nome_cliente' => 'nullable|string',
             'telefone_cliente' => 'nullable|string',
             'valor' => 'nullable|numeric',
-            'taxa' => 'nullable|numeric'
+            'taxa' => 'nullable|numeric',
+            'vendedor_id' => 'nullable|integer',
+            'entregador_id' => 'nullable|integer'
         ]);
         $entrega = Entrega::find($id);
 

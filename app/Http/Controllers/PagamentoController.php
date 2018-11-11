@@ -32,6 +32,7 @@ class PagamentoController extends Controller
             'tipo' => 'required|string',
             'valor' => 'required|numeric',
             'descricao' => 'required|string',
+            'user_id' => 'nullable|integer'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -70,6 +71,7 @@ class PagamentoController extends Controller
             'tipo' => 'nullable|string',
             'valor' => 'nullable|numeric',
             'descricao' => 'nullable|string',
+            'user_id' => 'nullable|integer'
         ]);
         $pagamento = Pagamento::find($id);
 

@@ -37,7 +37,9 @@ class EnderecoController extends Controller
             'estado' => 'required|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'complemento' => 'nullable|string'
+            'complemento' => 'nullable|string',
+            'user_id' => 'nullable|integer',
+            'entrega_id' => 'nullable|integer'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -81,7 +83,9 @@ class EnderecoController extends Controller
             'estado' => 'nullable|string',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'complemento' => 'nullable|string'
+            'complemento' => 'nullable|string',
+            'user_id' => 'nullable|integer',
+            'entrega_id' => 'nullable|integer'
         ]);
         $endereco = Endereco::find($id);
 

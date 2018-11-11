@@ -30,7 +30,8 @@ class ProdutoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nome' => 'required|string',
-            'valor' => 'required|numeric'
+            'valor' => 'required|numeric',
+            'entrega_id' => 'nullable|integer'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 401);
@@ -67,7 +68,8 @@ class ProdutoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nome' => 'nullable|string',
-            'valor' => 'nullable|numeric'
+            'valor' => 'nullable|numeric',
+            'entrega_id' => 'nullable|integer'
         ]);
         $produto = Produto::find($id);
 

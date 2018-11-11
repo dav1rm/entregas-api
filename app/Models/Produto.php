@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Produto extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['nome', 'valor'];
+    protected $fillable = ['nome', 'valor', 'entrega_id'];
 
     public function entrega()
     {
